@@ -76,8 +76,13 @@
 
         get(hash)
             .then(text => {
-                console.log(text);
                 renderToDom(text, contentSection);
+
+                var headlines = document.getElementsByTagName('h1');
+                if(headlines.length) {
+                    var title = headlines[0].textContent;
+                    document.title = title + ' - ' + document.title;
+                }
             });
     })(hash);
 })();
