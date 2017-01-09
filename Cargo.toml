@@ -1,6 +1,8 @@
 [package]
 name = "ipfs-ink"
 version = "0.1.0"
-authors = ["user"]
+authors = ["kpcyrd"]
 
 [dependencies]
+nickel = "*"
+rustc-serialize = "0.3.22"
