@@ -6,4 +6,3 @@ authors = ["kpcyrd"]
 [dependencies]
 nickel = "*"
 rustc-serialize = "0.3.22"
-hyper = "0.9.14"

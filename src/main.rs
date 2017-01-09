@@ -1,4 +1,3 @@
-extern crate hyper;
 extern crate rustc_serialize;
 #[macro_use] extern crate nickel;
 
@@ -7,7 +6,6 @@ use std::io::prelude::*;
 use std::collections::{ HashMap, BTreeMap };
 use std::process::{ Command, Stdio };
 
-use hyper::header::Connection;
 use nickel::status::StatusCode;
 use nickel::{ Nickel, HttpRouter, JsonBody, Mountable, StaticFilesHandler, MediaType, MiddlewareResult, Request, Response };
 use rustc_serialize::json::{ Json, ToJson };
@@ -77,19 +75,10 @@ fn logger_fn<'mw>(req: &mut Request, res: Response<'mw>) -> MiddlewareResult<'mw
     res.next_middleware()
 }
 
-fn no_keepalive<'mw>(_: &mut Request, mut res: Response<'mw>) -> MiddlewareResult<'mw> {
-    // this is a workaround for broken keep-alive (people on irc say it's in hyper)
-    println!("adding Connection: close");
-    res.set(Connection::close());
-    res.next_middleware()
-}
-
-
 fn main() {
     let mut server = Nickel::new();
 
     server.utilize(logger_fn);
-    server.utilize(no_keepalive);
 
     server.get("/", middleware! { |_, res|
         let mut data = HashMap::new();
@@ -130,5 +119,6 @@ fn main() {
 
     server.mount("/assets/", StaticFilesHandler::new("assets/"));
 
+    server.keep_alive_timeout(None);
     server.listen("127.0.0.1:6969").unwrap();
 }
