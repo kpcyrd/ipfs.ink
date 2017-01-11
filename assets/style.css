@@ -19,6 +19,9 @@ textarea{
 .pull-right {
     text-align:right;
 }
+form {
+    margin-bottom: 25px;
+}
 footer {
     text-align:right;
     font-size:small;
