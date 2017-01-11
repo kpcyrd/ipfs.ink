@@ -29,8 +29,7 @@ impl ToJson for IpfsObject {
 }
 
 fn add_to_ipfs(essay: Essay) -> IpfsObject {
-    let mut process = match Command::new("ipfs")
-                                .args(&["add", "-q"])
+    let mut process = match Command::new("contrib/ipfs-add")
                                 .stdin(Stdio::piped())
                                 .stdout(Stdio::piped())
                                 .spawn() {
@@ -46,7 +45,7 @@ fn add_to_ipfs(essay: Essay) -> IpfsObject {
 
     let result = process
                     .wait_with_output()
-                    .expect("failed to wait on ipfs cat");
+                    .expect("failed to wait on ipfs add");
 
     let result = String::from_utf8(result.stdout).unwrap();
     let hash = result.trim();
@@ -55,8 +54,8 @@ fn add_to_ipfs(essay: Essay) -> IpfsObject {
 
 // it is recommended to proxy to go-ipfs instead in production
 fn get_from_ipfs(hash: &str) -> String {
-    let process = match Command::new("ipfs")
-                                .args(&["cat", hash])
+    let process = match Command::new("contrib/ipfs-cat")
+                                .arg(hash)
                                 .stdout(Stdio::piped())
                                 .spawn() {
         Err(why) => panic!("could'nt spawn ipfs: {}", why.description()),
@@ -120,5 +119,5 @@ fn main() {
     server.mount("/assets/", StaticFilesHandler::new("assets/"));
 
     server.keep_alive_timeout(None);
-    server.listen("127.0.0.1:6969").unwrap();
+    server.listen("0.0.0.0:6767").unwrap();
 }

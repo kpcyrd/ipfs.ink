@@ -1,0 +1,2 @@
+#!/bin/sh
+exec ipfs --api `grep go-ipfs /etc/hosts | awk '{print "/ip4/"$1"/tcp/5001"}'` add -q
