@@ -1,2 +1,6 @@
 #!/bin/sh
-exec ipfs --api `grep go-ipfs /etc/hosts | awk '{print "/ip4/"$1"/tcp/5001"}'` cat "$@"
+if grep -q go-ipfs /etc/hosts; then
+    exec ipfs --api `grep go-ipfs /etc/hosts | awk '{print "/ip4/"$1"/tcp/5001"}'` cat "$@"
+else
+    exec ipfs cat "$@"
+fi

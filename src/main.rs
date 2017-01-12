@@ -93,12 +93,20 @@ fn main() {
         return res.render("assets/view.html", &data);
     });
 
-    server.get("/ipfs/:hash", middleware! { |req, mut res|
+    server.get("/ipfs/:hash(/:file\\.:ext)?", middleware! { |req, mut res|
         res.set(MediaType::Txt);
         let hash = req.param("hash").unwrap();
 
-        println!("get ipfs object: {}", hash);
-        let result = get_from_ipfs(hash);
+        let path = match req.param("file") {
+            Some(file) => {
+                let ext = req.param("ext").unwrap();
+                format!("/ipfs/{}/{}.{}", hash, file, ext)
+            },
+            None => format!("/ipfs/{}", hash),
+        };
+
+        println!("get ipfs object: {}", path);
+        let result = get_from_ipfs(path.as_str());
 
         println!("ipfs responded: {:?}", result);
         result
