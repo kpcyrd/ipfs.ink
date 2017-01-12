@@ -1,13 +1,12 @@
-(function() {
+document.addEventListener('DOMContentReady', function() {
     var hash = location.pathname.split('/')[2];
 
-    marked.setOptions({
-        renderer: new marked.Renderer(),
-        breaks: true,
-        sanitize: true,
-    });
-
     var render = function(text) {
+        marked.setOptions({
+            renderer: new marked.Renderer(),
+            breaks: true,
+            sanitize: true,
+        });
         return marked.parse(text);
     };
 
@@ -88,4 +87,4 @@
                 }
             });
     })(hash);
-})();
+});
