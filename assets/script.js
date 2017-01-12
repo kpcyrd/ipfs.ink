@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentReady', function() {
+document.addEventListener('DOMContentLoaded', function() {
     var hash = location.pathname.split('/')[2];
 
     var render = function(text) {
