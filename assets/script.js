@@ -18,6 +18,9 @@
     var publish = function(text, cb) {
         return fetch('/publish', {
             method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
             body: JSON.stringify({
                 text: text
             })

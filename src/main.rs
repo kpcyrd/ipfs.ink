@@ -105,6 +105,14 @@ fn main() {
     });
 
     server.post("/publish", middleware! { |req, res|
+        let content_type = match req.origin.headers.get_raw("content-type") {
+            Some(header) => {
+                String::from_utf8(header[0].clone()).unwrap()
+            },
+            None => String::new()
+        };
+        assert_eq!(content_type, "application/json");
+
         let essay = try_with!(res, {
             req.json_as::<Essay>().map_err(|e| (StatusCode::BadRequest, e))
         });
