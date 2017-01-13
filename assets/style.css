@@ -22,6 +22,12 @@ textarea{
 form {
     margin-bottom: 25px;
 }
+#submit-button {
+    padding: 10px;
+    border: 1px solid black;
+    background: white;
+    margin-top: 10px;
+}
 footer {
     text-align:right;
     font-size:small;
