@@ -7,7 +7,7 @@ use std::collections::{ HashMap, BTreeMap };
 use std::process::{ Command, Stdio };
 
 use nickel::status::StatusCode;
-use nickel::{ Nickel, HttpRouter, JsonBody, Mountable, StaticFilesHandler, MediaType, MiddlewareResult, Request, Response };
+use nickel::{ Nickel, JsonBody, Mountable, StaticFilesHandler, MediaType, MiddlewareResult, Request, Response };
 use rustc_serialize::json::{ Json, ToJson };
 
 #[derive(RustcDecodable, RustcEncodable, Debug)]
@@ -79,57 +79,59 @@ fn main() {
 
     server.utilize(logger_fn);
 
-    server.get("/", middleware! { |_, res|
-        let mut data = HashMap::new();
-        data.insert("name", "user");
-        return res.render("assets/index.html", &data);
-    });
+    server.utilize(router! {
+        get "/" => |_, res| {
+            let mut data = HashMap::new();
+            data.insert("name", "user");
+            return res.render("assets/index.html", &data);
+        }
 
-    server.get("/e/:hash", middleware! { |req, res|
-        let hash = req.param("hash").unwrap();
+        get "/e/:hash" => |req, res| {
+            let hash = req.param("hash").unwrap();
 
-        let mut data = HashMap::new();
-        data.insert("hash", hash);
-        return res.render("assets/view.html", &data);
-    });
+            let mut data = HashMap::new();
+            data.insert("hash", hash);
+            return res.render("assets/view.html", &data);
+        }
 
-    server.get("/ipfs/:hash(/:file\\.:ext)?", middleware! { |req, mut res|
-        res.set(MediaType::Txt);
-        let hash = req.param("hash").unwrap();
+        get "/ipfs/:hash(/:file\\.:ext)?" => |req, mut res| {
+            res.set(MediaType::Txt);
+            let hash = req.param("hash").unwrap();
 
-        let path = match req.param("file") {
-            Some(file) => {
-                let ext = req.param("ext").unwrap();
-                format!("/ipfs/{}/{}.{}", hash, file, ext)
-            },
-            None => format!("/ipfs/{}", hash),
-        };
+            let path = match req.param("file") {
+                Some(file) => {
+                    let ext = req.param("ext").unwrap();
+                    format!("/ipfs/{}/{}.{}", hash, file, ext)
+                },
+                None => format!("/ipfs/{}", hash),
+            };
 
-        println!("get ipfs object: {}", path);
-        let result = get_from_ipfs(path.as_str());
+            println!("get ipfs object: {}", path);
+            let result = get_from_ipfs(path.as_str());
 
-        println!("ipfs responded: {:?}", result);
-        result
-    });
+            println!("ipfs responded: {:?}", result);
+            result
+        }
 
-    server.post("/publish", middleware! { |req, res|
-        let content_type = match req.origin.headers.get_raw("content-type") {
-            Some(header) => {
-                String::from_utf8(header[0].clone()).unwrap()
-            },
-            None => String::new()
-        };
-        assert_eq!(content_type, "application/json");
+        post "/publish" => |req, res| {
+            let content_type = match req.origin.headers.get_raw("content-type") {
+                Some(header) => {
+                    String::from_utf8(header[0].clone()).unwrap()
+                },
+                None => String::new()
+            };
+            assert_eq!(content_type, "application/json");
 
-        let essay = try_with!(res, {
-            req.json_as::<Essay>().map_err(|e| (StatusCode::BadRequest, e))
-        });
-        println!("{:?}", essay);
+            let essay = try_with!(res, {
+                req.json_as::<Essay>().map_err(|e| (StatusCode::BadRequest, e))
+            });
+            println!("{:?}", essay);
 
-        let obj = add_to_ipfs(essay);
-        println!("{:?}", obj);
+            let obj = add_to_ipfs(essay);
+            println!("{:?}", obj);
 
-        obj.to_json()
+            obj.to_json()
+        }
     });
 
     server.mount("/assets/", StaticFilesHandler::new("assets/"));
