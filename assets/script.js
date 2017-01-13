@@ -43,17 +43,28 @@ window.addEventListener('load', function() {
         var essayText = document.getElementById('essay-text');
         var editSection = document.getElementById('edit-section');
         var previewSection = document.getElementById('preview-section');
+        var submitButton = document.getElementById('submit-button');
 
         var form = document.getElementById('essay');
-        form.onsubmit = function() {
+        form.onsubmit = function(e) {
+            e.preventDefault();
             console.log('submit');
             var content = essayText.value;
             console.log(content);
+
+            submitButton.disabled = true;
+            submitButton.value = 'submitting...';
 
             publish(content)
                 .then(json => {
                     console.log(json);
                     location.href = '/e/' + json.hash;
+                })
+                .catch(e => {
+                    submitButton.value = 'publish';
+                    submitButton.disabled = false;
+                    console.log(e);
+                    alert(e.message);
                 });
 
             return false;
