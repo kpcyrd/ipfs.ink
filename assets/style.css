@@ -38,7 +38,7 @@ form {
     padding:0;
 }
 .tab[disabled] {
-    color:lightgrey;
+    color:#a9a9a9;
     cursor:default;
     text-decoration:none;
 }
