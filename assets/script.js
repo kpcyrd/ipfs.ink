@@ -38,12 +38,18 @@ window.addEventListener('load', function() {
             renderToDom(essayText.value, previewSection);
             editSection.hidden = really;
             previewSection.hidden = !really;
+
+            viewEdit.disabled = !really;
+            viewPreview.disabled = really;
         };
 
         var essayText = document.getElementById('essay-text');
         var editSection = document.getElementById('edit-section');
         var previewSection = document.getElementById('preview-section');
         var submitButton = document.getElementById('submit-button');
+
+        var viewEdit = document.getElementById('view-edit');
+        var viewPreview = document.getElementById('view-preview');
 
         var form = document.getElementById('essay');
         form.onsubmit = function(e) {
@@ -70,13 +76,11 @@ window.addEventListener('load', function() {
             return false;
         };
 
-        var viewEdit = document.getElementById('view-edit');
         viewEdit.onclick = function() {
             showPreview(false);
             return false;
         };
 
-        var viewPreview = document.getElementById('view-preview');
         viewPreview.onclick = function() {
             showPreview(true);
             return false;

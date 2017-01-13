@@ -28,6 +28,20 @@ form {
     background: white;
     margin-top: 10px;
 }
+.tab {
+    border:0;
+    background:none;
+    color:blue;
+    text-decoration:underline;
+    font-size:18px;
+    cursor:pointer;
+    padding:0;
+}
+.tab[disabled] {
+    color:lightgrey;
+    cursor:default;
+    text-decoration:none;
+}
 footer {
     text-align:right;
     font-size:small;
