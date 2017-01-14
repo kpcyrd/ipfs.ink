@@ -1,4 +1,7 @@
-# ipfs.ink
+# ipfs.ink [![travis][travis-image]][travis-url]
+
+[travis-image]: https://img.shields.io/travis/kpcyrd/ipfs.ink/master.svg
+[travis-url]: https://travis-ci.org/kpcyrd/ipfs.ink
 
 Publish and render markdown essays to and from ipfs.
 
