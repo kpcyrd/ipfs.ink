@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM ubuntu:16.10
 
 RUN DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
