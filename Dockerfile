@@ -10,6 +10,7 @@ RUN DEBIAN_FRONTEND=noninteractive && \
        gcc \
        libc6-dev \
        libssl-dev \
+       nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 ENV RUST_ARCHIVE=rust-1.14.0-x86_64-unknown-linux-gnu.tar.gz
@@ -36,4 +37,9 @@ WORKDIR /project
 
 COPY ./ ./
 RUN cargo build --release
+
+RUN npm install \
+        && npm install -g webpack \
+        && webpack -p --config webpack.production.config.js
+
 ENTRYPOINT ["./target/release/ipfs-ink"]

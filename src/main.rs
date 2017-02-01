@@ -83,7 +83,7 @@ fn main() {
         get "/" => |_, res| {
             let mut data = HashMap::new();
             data.insert("name", "user");
-            return res.render("assets/index.html", &data);
+            return res.render("templates/index.html", &data);
         }
 
         get "/e/:hash" => |req, res| {
@@ -91,7 +91,7 @@ fn main() {
 
             let mut data = HashMap::new();
             data.insert("hash", hash);
-            return res.render("assets/view.html", &data);
+            return res.render("templates/view.html", &data);
         }
 
         get "/ipfs/:hash(/:file\\.:ext)?" => |req, mut res| {
@@ -134,7 +134,7 @@ fn main() {
         }
     });
 
-    server.mount("/assets/", StaticFilesHandler::new("assets/"));
+    server.mount("/assets/", StaticFilesHandler::new("public/assets/"));
 
     server.keep_alive_timeout(None);
     server.listen("0.0.0.0:6767").unwrap();

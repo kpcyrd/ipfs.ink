@@ -31,6 +31,10 @@ https://ipfs.ink/e/QmULtKYfv5CSGeesjDiBQbfoB3S1F7QY33Dpu59HzRSATu
 
 If you found this project, you might already know about ipfs. If you don't know why you would want to publish to ipfs, read it on [ipfs.io](https://ipfs.io/).
 
+## Development
+
+Run `./index.js` in one terminal, run `cargo run` in another.
+
 ## Status
 
 This project is in an early phase. There are some workarounds in the code and there is no guarantee of availability whatsoever. Please use this service for testing only. Everything you publish is publicly accessible.

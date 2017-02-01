@@ -1,12 +1,17 @@
+import 'whatwg-fetch'
+
 window.addEventListener('load', function() {
+    var marked = require('marked');
+
     var hash = location.pathname.split('/')[2];
 
+    marked.setOptions({
+        renderer: new marked.Renderer(),
+        breaks: true,
+        sanitize: true,
+    });
+
     var render = function(text) {
-        marked.setOptions({
-            renderer: new marked.Renderer(),
-            breaks: true,
-            sanitize: true,
-        });
         return marked.parse(text);
     };
 
@@ -88,7 +93,7 @@ window.addEventListener('load', function() {
     })(!hash);
 
     (function(hash) {
-        if(!hash)return;
+        if(!hash) return;
         var contentSection = document.getElementById('content');
 
         get(hash)
