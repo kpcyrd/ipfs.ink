@@ -11,6 +11,7 @@ RUN DEBIAN_FRONTEND=noninteractive && \
        libc6-dev \
        libssl-dev \
        nodejs \
+       npm \
     && rm -rf /var/lib/apt/lists/*
 
 ENV RUST_ARCHIVE=rust-1.14.0-x86_64-unknown-linux-gnu.tar.gz
