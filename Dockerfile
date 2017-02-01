@@ -41,6 +41,7 @@ RUN cargo build --release
 
 RUN npm install \
         && npm install -g webpack \
+        && ln -s /usr/bin/nodejs /usr/bin/node \
         && webpack -p --config webpack.production.config.js
 
 ENTRYPOINT ["./target/release/ipfs-ink"]
