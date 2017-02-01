@@ -3,4 +3,6 @@
 Dockerfile
 .dockerignore
 target
+!target/release
 README.md
+node_modules

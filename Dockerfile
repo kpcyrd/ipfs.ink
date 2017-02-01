@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM ubuntu:16.10
 
 RUN DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -10,6 +10,8 @@ RUN DEBIAN_FRONTEND=noninteractive && \
        gcc \
        libc6-dev \
        libssl-dev \
+       nodejs \
+       npm \
     && rm -rf /var/lib/apt/lists/*
 
 ENV RUST_ARCHIVE=rust-1.14.0-x86_64-unknown-linux-gnu.tar.gz
@@ -36,4 +38,10 @@ WORKDIR /project
 
 COPY ./ ./
 RUN cargo build --release
+
+RUN npm install \
+        && npm install -g webpack \
+        && ln -s /usr/bin/nodejs /usr/bin/node \
+        && webpack -p --config webpack.production.config.js
+
 ENTRYPOINT ["./target/release/ipfs-ink"]
