@@ -28,9 +28,10 @@ RUN curl -fsOSL $RUST_DOWNLOAD_URL \
 
 RUN mkdir /go-ipfs
 WORKDIR /go-ipfs
-RUN curl -fsOSL https://dist.ipfs.io/go-ipfs/v0.4.4/go-ipfs_v0.4.4_linux-amd64.tar.gz \
-        && tar -C /go-ipfs -xzf go-ipfs_v0.4.4_linux-amd64.tar.gz \
-        && rm go-ipfs_v0.4.4_linux-amd64.tar.gz \
+ARG IPFS_VERSION=v0.4.6
+RUN curl -fsOSL https://dist.ipfs.io/go-ipfs/${IPFS_VERSION}/go-ipfs_${IPFS_VERSION}_linux-amd64.tar.gz \
+        && tar -C /go-ipfs -xzf go-ipfs_${IPFS_VERSION}_linux-amd64.tar.gz \
+        && rm go-ipfs_${IPFS_VERSION}_linux-amd64.tar.gz \
         && cp go-ipfs/ipfs /usr/local/bin
 
 RUN mkdir /project
