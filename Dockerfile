@@ -40,8 +40,9 @@ RUN mkdir /rust \
         && ./install.sh \
         && cd /project \
         && cargo build --release \
+        && mv target/release/ipfs-ink . \
         && /usr/local/lib/rustlib/uninstall.sh \
-        && rm -rf /rust
+        && rm -rf /rust ~/.cargo target/
 
 RUN npm install \
         && npm install -g webpack \
@@ -49,4 +50,4 @@ RUN npm install \
         && webpack -p --config webpack.production.config.js \
         && rm -rf /usr/local/lib/node_modules/ node_modules/ ~/.npm
 
-ENTRYPOINT ["./target/release/ipfs-ink"]
+ENTRYPOINT ["./ipfs-ink"]
