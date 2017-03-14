@@ -17,15 +17,6 @@ RUN DEBIAN_FRONTEND=noninteractive && \
 ENV RUST_ARCHIVE=rust-1.14.0-x86_64-unknown-linux-gnu.tar.gz
 ENV RUST_DOWNLOAD_URL=https://static.rust-lang.org/dist/$RUST_ARCHIVE
 
-RUN mkdir /rust
-WORKDIR /rust
-
-RUN curl -fsOSL $RUST_DOWNLOAD_URL \
-        && curl -s $RUST_DOWNLOAD_URL.sha256 | sha256sum -c - \
-        && tar -C /rust -xzf $RUST_ARCHIVE --strip-components=1 \
-        && rm $RUST_ARCHIVE \
-        && ./install.sh
-
 RUN mkdir /go-ipfs
 WORKDIR /go-ipfs
 ARG IPFS_VERSION=v0.4.6
@@ -36,9 +27,19 @@ RUN curl -fsOSL https://dist.ipfs.io/go-ipfs/${IPFS_VERSION}/go-ipfs_${IPFS_VERS
 
 RUN mkdir /project
 WORKDIR /project
-
 COPY ./ ./
-RUN cargo build --release
+
+RUN mkdir /rust \
+       && cd /rust \
+       && curl -fsOSL $RUST_DOWNLOAD_URL \
+        && curl -s $RUST_DOWNLOAD_URL.sha256 | sha256sum -c - \
+        && tar -C /rust -xzf $RUST_ARCHIVE --strip-components=1 \
+        && rm $RUST_ARCHIVE \
+        && ./install.sh \
+       && cd /project \
+       && cargo build --release \
+       && /usr/local/lib/rustlib/uninstall.sh \
+       && rm -rf /rust
 
 RUN npm install \
         && npm install -g webpack \
