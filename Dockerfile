@@ -1,4 +1,4 @@
-FROM ubuntu:16.10
+FROM ubuntu:17.04
 
 RUN DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -14,10 +14,10 @@ RUN DEBIAN_FRONTEND=noninteractive && \
        npm \
     && rm -rf /var/lib/apt/lists/*
 
-ENV RUST_ARCHIVE=rust-1.14.0-x86_64-unknown-linux-gnu.tar.gz
+ENV RUST_ARCHIVE=rust-1.17.0-x86_64-unknown-linux-gnu.tar.gz
 ENV RUST_DOWNLOAD_URL=https://static.rust-lang.org/dist/$RUST_ARCHIVE
 
-ENV IPFS_VERSION=v0.4.6
+ENV IPFS_VERSION=v0.4.8
 RUN mkdir /go-ipfs \
         && cd /go-ipfs \
         && curl -fsOSL https://dist.ipfs.io/go-ipfs/${IPFS_VERSION}/go-ipfs_${IPFS_VERSION}_linux-amd64.tar.gz \

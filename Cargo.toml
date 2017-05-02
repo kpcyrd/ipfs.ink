@@ -5,4 +5,4 @@ authors = ["kpcyrd"]
 
 [dependencies]
 nickel = "*"
-rustc-serialize = "0.3.22"
+rustc-serialize = "0.3.24"
