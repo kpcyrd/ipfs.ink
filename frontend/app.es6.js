@@ -71,7 +71,11 @@ window.addEventListener('load', function() {
                     submitButton.value = 'publish';
                     submitButton.disabled = false;
                     console.log(json);
-                    location.href = '/e/' + json.hash;
+                    if(json.hash) {
+                        location.href = '/e/' + json.hash;
+                    } else {
+                        alert('failed to publish: server didn\'t return hash');
+                    }
                 })
                 .catch(e => {
                     submitButton.value = 'publish';
