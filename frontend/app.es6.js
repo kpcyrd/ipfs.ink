@@ -68,6 +68,8 @@ window.addEventListener('load', function() {
 
             publish(content)
                 .then(json => {
+                    submitButton.value = 'publish';
+                    submitButton.disabled = false;
                     console.log(json);
                     location.href = '/e/' + json.hash;
                 })
