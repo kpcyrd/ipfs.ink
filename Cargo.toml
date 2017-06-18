@@ -5,4 +5,9 @@ authors = ["kpcyrd"]
 
 [dependencies]
 nickel = "*"
-rustc-serialize = "0.3.24"
+rustc-serialize = "0.3"
+multipart = "0.13.0"
+hyper = "0.10"
+serde = "1.0"
+serde_json = "1.0"
+serde_derive = "1.0"

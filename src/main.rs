@@ -1,73 +1,19 @@
 extern crate rustc_serialize;
+extern crate hyper;
+extern crate multipart;
 #[macro_use] extern crate nickel;
+extern crate serde_json;
+#[macro_use] extern crate serde_derive;
 
-use std::error::Error;
-use std::io::prelude::*;
-use std::collections::{ HashMap, BTreeMap };
-use std::process::{ Command, Stdio };
+use std::collections::HashMap;
 
 use nickel::status::StatusCode;
 use nickel::{ Nickel, JsonBody, Mountable, StaticFilesHandler, MediaType, MiddlewareResult, Request, Response };
-use rustc_serialize::json::{ Json, ToJson };
 
-#[derive(RustcDecodable, RustcEncodable, Debug)]
-struct Essay {
-    text: String,
-}
+mod ipfs;
+mod structs;
 
-#[derive(RustcDecodable, RustcEncodable, Debug)]
-struct IpfsObject {
-    hash: String,
-}
-
-impl ToJson for IpfsObject {
-    fn to_json(&self) -> Json {
-        let mut map = BTreeMap::new();
-        map.insert("hash".to_string(), self.hash.to_json());
-        Json::Object(map)
-    }
-}
-
-fn add_to_ipfs(essay: Essay) -> IpfsObject {
-    let mut process = match Command::new("contrib/ipfs-add")
-                                .stdin(Stdio::piped())
-                                .stdout(Stdio::piped())
-                                .spawn() {
-        Err(why) => panic!("could'nt spawn ipfs: {}", why.description()),
-        Ok(process) => process,
-    };
-
-    match process.stdin.as_mut().unwrap().write_all(essay.text.as_bytes()) {
-        Err(why) => panic!("couldn't write to ipfs stdin: {}", why.description()),
-        Ok(_) => println!("sent essay to ipfs"),
-
-    };
-
-    let result = process
-                    .wait_with_output()
-                    .expect("failed to wait on ipfs add");
-
-    let result = String::from_utf8(result.stdout).unwrap();
-    let hash = result.trim();
-    IpfsObject { hash: String::from(hash) }
-}
-
-// it is recommended to proxy to go-ipfs instead in production
-fn get_from_ipfs(hash: &str) -> String {
-    let process = match Command::new("contrib/ipfs-cat")
-                                .arg(hash)
-                                .stdout(Stdio::piped())
-                                .spawn() {
-        Err(why) => panic!("could'nt spawn ipfs: {}", why.description()),
-        Ok(process) => process,
-    };
-
-    let result = process
-                    .wait_with_output()
-                    .expect("failed to wait on ipfs cat");
-
-    String::from_utf8(result.stdout).unwrap()
-}
+use structs::Essay;
 
 fn logger_fn<'mw>(req: &mut Request, res: Response<'mw>) -> MiddlewareResult<'mw> {
     println!("logging request from logger middleware: {:?}", req.origin.uri);
@@ -79,6 +25,7 @@ fn main() {
 
     server.utilize(logger_fn);
 
+    #[allow(resolve_trait_on_defaulted_unit, unreachable_code)]
     server.utilize(router! {
         get "/" => |_, res| {
             let mut data = HashMap::new();
@@ -107,7 +54,7 @@ fn main() {
             };
 
             println!("get ipfs object: {}", path);
-            let result = get_from_ipfs(path.as_str());
+            let result = ipfs::cat(&path).unwrap();
 
             println!("ipfs responded: {:?}", result);
             result
@@ -127,10 +74,10 @@ fn main() {
             });
             println!("{:?}", essay);
 
-            let obj = add_to_ipfs(essay);
+            let obj = ipfs::add(essay).unwrap();
             println!("{:?}", obj);
 
-            obj.to_json()
+            serde_json::to_string(&obj).unwrap()
         }
     });
 
