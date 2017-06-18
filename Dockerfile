@@ -17,16 +17,6 @@ RUN DEBIAN_FRONTEND=noninteractive && \
 ENV RUST_ARCHIVE=rust-1.17.0-x86_64-unknown-linux-gnu.tar.gz
 ENV RUST_DOWNLOAD_URL=https://static.rust-lang.org/dist/$RUST_ARCHIVE
 
-ENV IPFS_VERSION=v0.4.8
-RUN mkdir /go-ipfs \
-        && cd /go-ipfs \
-        && curl -fsOSL https://dist.ipfs.io/go-ipfs/${IPFS_VERSION}/go-ipfs_${IPFS_VERSION}_linux-amd64.tar.gz \
-        && tar -C /go-ipfs -xzf go-ipfs_${IPFS_VERSION}_linux-amd64.tar.gz \
-        && rm go-ipfs_${IPFS_VERSION}_linux-amd64.tar.gz \
-        && cp go-ipfs/ipfs /usr/local/bin \
-        && cd / \
-        && rm -rf /go-ipfs
-
 RUN mkdir /project
 WORKDIR /project
 COPY ./ ./
