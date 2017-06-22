@@ -22,22 +22,22 @@ WORKDIR /project
 COPY ./ ./
 
 RUN mkdir /rust \
-        && cd /rust \
-        && curl -fsOSL $RUST_DOWNLOAD_URL \
-        && curl -s $RUST_DOWNLOAD_URL.sha256 | sha256sum -c - \
-        && tar -C /rust -xzf $RUST_ARCHIVE --strip-components=1 \
-        && rm $RUST_ARCHIVE \
-        && ./install.sh \
-        && cd /project \
-        && cargo build --release \
-        && mv target/release/ipfs-ink . \
-        && /usr/local/lib/rustlib/uninstall.sh \
-        && rm -rf /rust ~/.cargo target/
+    && cd /rust \
+    && curl -fsOSL $RUST_DOWNLOAD_URL \
+    && curl -s $RUST_DOWNLOAD_URL.sha256 | sha256sum -c - \
+    && tar -C /rust -xzf $RUST_ARCHIVE --strip-components=1 \
+    && rm $RUST_ARCHIVE \
+    && ./install.sh \
+    && cd /project \
+    && cargo build --release \
+    && mv target/release/ipfs-ink . \
+    && /usr/local/lib/rustlib/uninstall.sh \
+    && rm -rf /rust ~/.cargo target/
 
-RUN npm install \
-        && npm install -g webpack \
-        && ln -s /usr/bin/nodejs /usr/bin/node \
-        && webpack -p --config webpack.production.config.js \
-        && rm -rf /usr/local/lib/node_modules/ node_modules/ ~/.npm
+RUN ln -s /usr/bin/nodejs /usr/bin/node \
+    && npm install \
+    && npm install -g webpack \
+    && webpack -p --config webpack.production.config.js \
+    && rm -rf /usr/local/lib/node_modules/ node_modules/ ~/.npm
 
 ENTRYPOINT ["./ipfs-ink"]
