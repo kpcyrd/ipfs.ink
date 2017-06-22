@@ -16,8 +16,9 @@ pub struct IpfsAddResponse {
 }
 
 pub fn add(essay: Essay) -> Result<IpfsAddResponse, Error> {
+    let mut binary = essay.text.as_bytes();
     let mut res = Multipart::new()
-        .add_text("file", essay.text)
+        .add_stream("file", &mut binary, None as Option<&str>, None)
         .client_request(&Client::new(), "http://go-ipfs:5001/api/v0/add?pin=true")?;
 
     assert_eq!(res.status, hyper::Ok);
