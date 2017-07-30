@@ -16,7 +16,7 @@ var config = {
     },
     output: {
         path: assetsPath,
-        filename: '[hash].[name]',
+        filename: '[chunkhash].[name]',
         publicPath: '/assets/'
     },
     module: {
@@ -32,7 +32,7 @@ var config = {
         }]
     },
     plugins: [
-        new ExtractTextPlugin({ filename: '[hash].[name]', allChunks: true }),
+        new ExtractTextPlugin({ filename: '[chunkhash].[name]', allChunks: true }),
         new AssetsPlugin(),
     ]
 };
