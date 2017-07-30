@@ -5,6 +5,7 @@ extern crate multipart;
 extern crate serde_json;
 #[macro_use] extern crate serde_derive;
 
+use std::env;
 use std::collections::HashMap;
 
 use nickel::status::StatusCode;
@@ -12,6 +13,7 @@ use nickel::{ Nickel, JsonBody, Mountable, StaticFilesHandler, MediaType, Middle
 
 mod ipfs;
 mod structs;
+mod webpack;
 
 use structs::Essay;
 
@@ -23,6 +25,26 @@ fn logger_fn<'mw>(req: &mut Request, res: Response<'mw>) -> MiddlewareResult<'mw
 fn main() {
     let mut server = Nickel::new();
 
+    let (bundle, style) = match env::var("WEBPACK_DEV") {
+        Ok(_) => {
+            println!("Using developer asset paths");
+            (String::from("bundle.js"), String::from("style.css"))
+        },
+        Err(_) => {
+            let assets = webpack::load("webpack-assets.json")
+                            .expect("failed to load webpack-assets.json, set WEBPACK_DEV=1 for development");
+
+            let bundle = webpack::find(&assets, "js", "bundle.js").expect("couldn't find bundle.js").clone();
+            let style = webpack::find(&assets, "css", "style.css").expect("couldn't find style.css").clone();
+
+            (bundle, style)
+        },
+    };
+
+    // workaround for capturing router! macro
+    let bundle_ = bundle.clone();
+    let style_ = style.clone();
+
     server.utilize(logger_fn);
 
     #[allow(resolve_trait_on_defaulted_unit, unreachable_code)]
@@ -30,6 +52,8 @@ fn main() {
         get "/" => |_, res| {
             let mut data = HashMap::new();
             data.insert("name", "user");
+            data.insert("bundle_js", &bundle);
+            data.insert("style_css", &style);
             return res.render("templates/index.html", &data);
         }
 
@@ -38,6 +62,8 @@ fn main() {
 
             let mut data = HashMap::new();
             data.insert("hash", hash);
+            data.insert("bundle_js", &bundle_);
+            data.insert("style_css", &style_);
             return res.render("templates/view.html", &data);
         }
 
