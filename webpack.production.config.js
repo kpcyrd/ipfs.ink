@@ -1,5 +1,6 @@
 var Webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var AssetsPlugin = require('assets-webpack-plugin');
 var path = require('path');
 var assetsPath = path.resolve(__dirname, 'public', 'assets');
 var entryPath = path.resolve(__dirname, 'frontend', 'app.es6.js');
@@ -15,7 +16,7 @@ var config = {
     },
     output: {
         path: assetsPath,
-        filename: '[name]',
+        filename: '[chunkhash].[name]',
         publicPath: '/assets/'
     },
     module: {
@@ -31,7 +32,8 @@ var config = {
         }]
     },
     plugins: [
-        new ExtractTextPlugin({ filename: 'style.css', allChunks: true }),
+        new ExtractTextPlugin({ filename: '[chunkhash].[name]', allChunks: true }),
+        new AssetsPlugin(),
     ]
 };
 

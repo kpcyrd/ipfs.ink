@@ -1,5 +1,5 @@
 var Webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var path = require('path');
 var assetsPath = path.resolve(__dirname, 'public', 'assets');
 var entryPath = path.resolve(__dirname, 'frontend', 'app.es6.js');
@@ -31,7 +31,7 @@ var config = {
     },
     plugins: [
         new Webpack.HotModuleReplacementPlugin(),
-        new ExtractTextPlugin({ filename: 'style.css', allChunks: true }),
+        new ExtractTextPlugin({ filename: '[name]', allChunks: true }),
     ]
 };
 

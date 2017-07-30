@@ -2,3 +2,4 @@ target
 *.swp
 node_modules
 public
+webpack-assets.json
