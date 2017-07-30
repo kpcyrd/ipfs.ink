@@ -17,7 +17,6 @@ var config = {
     output: {
         path: assetsPath,
         filename: '[chunkhash].[name]',
-        publicPath: '/assets/'
     },
     module: {
         loaders: [{
