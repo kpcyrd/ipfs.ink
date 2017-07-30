@@ -33,7 +33,7 @@ If you found this project, you might already know about ipfs. If you don't know 
 
 ## Development
 
-Run `./index.js` in one terminal, run `cargo run` in another.
+Run `./index.js` in one terminal, run `WEBPACK_DEV=1 cargo run` in another.
 
 ## Status
 
