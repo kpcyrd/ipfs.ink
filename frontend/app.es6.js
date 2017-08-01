@@ -1,5 +1,7 @@
 import 'whatwg-fetch'
 
+window['prerenderReady'] = false;
+
 window.addEventListener('load', function() {
     var marked = require('marked');
 
@@ -111,6 +113,8 @@ window.addEventListener('load', function() {
                     var title = headlines[0].textContent;
                     document.title = title + ' - ' + document.title;
                 }
+
+                window['prerenderReady'] = true;
             });
     })(hash);
 });
