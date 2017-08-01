@@ -16,7 +16,7 @@ var config = {
     },
     output: {
         path: assetsPath,
-        filename: '[chunkhash].[name]',
+        filename: '[hash].[name]',
     },
     module: {
         loaders: [{
@@ -31,7 +31,7 @@ var config = {
         }]
     },
     plugins: [
-        new ExtractTextPlugin({ filename: '[chunkhash].[name]', allChunks: true }),
+        new ExtractTextPlugin({ filename: '[hash].[name]', allChunks: true }),
         new AssetsPlugin(),
     ]
 };
