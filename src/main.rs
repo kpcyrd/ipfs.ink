@@ -22,6 +22,10 @@ fn logger_fn<'mw>(req: &mut Request, res: Response<'mw>) -> MiddlewareResult<'mw
     res.next_middleware()
 }
 
+fn set_prefetch<'mw>(res: &mut Response<'mw>, prefetch: &Vec<u8>) {
+    res.headers_mut().set_raw("Link", vec![prefetch.clone()]);
+}
+
 fn main() {
     let mut server = Nickel::new();
 
@@ -41,15 +45,20 @@ fn main() {
         },
     };
 
+    let prefetch = format!("</assets/{}>; rel=prefetch, </assets/{}>; rel=prefetch", style, bundle).into_bytes();
+
     // workaround for capturing router! macro
     let bundle_ = bundle.clone();
     let style_ = style.clone();
+    let prefetch_ = prefetch.clone();
 
     server.utilize(logger_fn);
 
     #[allow(resolve_trait_on_defaulted_unit, unreachable_code)]
     server.utilize(router! {
-        get "/" => |_, res| {
+        get "/" => |_, mut res| {
+            set_prefetch(&mut res, &prefetch);
+
             let mut data = HashMap::new();
             data.insert("name", "user");
             data.insert("bundle_js", &bundle);
@@ -57,7 +66,9 @@ fn main() {
             return res.render("templates/index.html", &data);
         }
 
-        get "/e/:hash" => |req, res| {
+        get "/e/:hash" => |req, mut res| {
+            set_prefetch(&mut res, &prefetch_);
+
             let hash = req.param("hash").unwrap();
 
             let mut data = HashMap::new();
