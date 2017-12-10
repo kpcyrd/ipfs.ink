@@ -1,9 +1,9 @@
 FROM alpine:latest
 
-COPY ./ /project
 WORKDIR /project
+COPY . .
 
-RUN apk add --no-cache llvm-libunwind \
+RUN apk add --no-cache libgcc \
     && apk add --no-cache --virtual .build rust cargo nodejs-npm \
     && cargo build --release \
     && mv target/release/ipfs-ink . \
